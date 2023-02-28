@@ -29,48 +29,6 @@ tableextension 50007 "SalesInvoiceHeaderExt" extends "Sales Invoice Header"
         {
             DataClassification = ToBeClassified;
         }
-        field(50100; "VAT Customer Name"; Text[50])
-        {
-            Caption = 'VAT Customer Name';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
-        field(50101; "VAT Address & Telephone"; Text[50])
-        {
-            Caption = 'VAT Address & Telephone';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
-        field(50102; "VAT Bank Name & Account"; Text[50])
-        {
-            Caption = 'VAT Bank Name & Account';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
-        field(50103; "VAT Invoice Mail Address"; Text[50])
-        {
-            Caption = 'VAT Invoice Mail Address';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
-        field(50104; "VAT Contact Information"; Text[30])
-        {
-            Caption = 'VAT Contact Information';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
-        field(50105; "VAT Handled Completely"; Boolean)
-        {
-            Caption = 'VAT Handled Completely';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
-        field(50106; "VAT Exported Completely"; Boolean)
-        {
-            Caption = 'VAT Exported Completely';
-            DataClassification = ToBeClassified;
-            Description = 'CHCL21.5';
-        }
         field(50302; "Sell-to Contact E-mail"; Text[80])
         {
             DataClassification = ToBeClassified;

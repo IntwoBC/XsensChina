@@ -353,30 +353,30 @@ query 50001 SalesOrder
             column(Tax_Liable; "Tax Liable")
             {
             }
-            column(VAT_Address_Telephone; "VAT Address & Telephone")
-            {
-            }
-            column(VAT_Bank_Name_Account; "VAT Bank Name & Account")
-            {
-            }
+            // column(VAT_Address_Telephone; "VAT Address & Telephone")
+            // {
+            // }
+            // column(VAT_Bank_Name_Account; "VAT Bank Name & Account")
+            // {
+            // }
             column(VAT_Base_Discount; "VAT Base Discount %")
             {
             }
             column(VAT_Bus_Posting_Group; "VAT Bus. Posting Group")
             {
             }
-            column(VAT_Contact_Information; "VAT Contact Information")
-            {
-            }
+            // column(VAT_Contact_Information; "VAT Contact Information")
+            // {
+            // }
             column(VAT_Country_Region_Code; "VAT Country/Region Code")
             {
             }
-            column(VAT_Customer_Name; "VAT Customer Name")
-            {
-            }
-            column(VAT_Invoice_Mail_Address; "VAT Invoice Mail Address")
-            {
-            }
+            // column(VAT_Customer_Name; "VAT Customer Name")
+            // {
+            // }
+            // column(VAT_Invoice_Mail_Address; "VAT Invoice Mail Address")
+            // {
+            // }
             column(VAT_Registration_No; "VAT Registration No.")
             {
             }

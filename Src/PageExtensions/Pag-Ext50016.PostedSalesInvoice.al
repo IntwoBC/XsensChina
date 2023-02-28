@@ -29,35 +29,10 @@ pageextension 50016 PostedSalesInvoice extends "Posted Sales Invoice"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Sell-to Customer Name 3 field.';
             }
-            field("VAT Customer Name"; Rec."VAT Customer Name")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the VAT Customer Name field.';
-            }
-            field("VAT Address & Telephone"; Rec."VAT Address & Telephone")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the VAT Address & Telephone field.';
-            }
-            field("VAT Bank Name & Account"; Rec."VAT Bank Name & Account")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the VAT Bank Name & Account field.';
-            }
             field("VAT Country/Region Code"; Rec."VAT Country/Region Code")
             {
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the VAT Country/Region Code field.';
-            }
-            field("VAT Contact Information"; Rec."VAT Contact Information")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the VAT Contact Information field.';
-            }
-            field("VAT Invoice Mail Address"; Rec."VAT Invoice Mail Address")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the VAT Invoice Mail Address field.';
             }
             field("Sell-to Contact E-mail"; Rec."Sell-to Contact E-mail")
             {

@@ -711,37 +711,37 @@ page 50098 "Posted Sales Invoice_LT"
             group("Chinese Localization")
             {
                 Caption = 'Chinese Localization';
-                field("VAT Customer Name"; Rec."VAT Customer Name")
-                {
-                    Editable = false;
-                    Importance = Promoted;
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the VAT Customer Name field.';
-                }
-                field("VAT Address & Telephone"; Rec."VAT Address & Telephone")
-                {
-                    Editable = false;
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the VAT Address & Telephone field.';
-                }
-                field("VAT Bank Name & Account"; Rec."VAT Bank Name & Account")
-                {
-                    Editable = false;
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the VAT Bank Name & Account field.';
-                }
-                field("VAT Invoice Mail Address"; Rec."VAT Invoice Mail Address")
-                {
-                    Editable = false;
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the VAT Invoice Mail Address field.';
-                }
-                field("VAT Contact Information"; Rec."VAT Contact Information")
-                {
-                    Editable = false;
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the VAT Contact Information field.';
-                }
+                // field("VAT Customer Name"; Rec."VAT Customer Name")
+                // {
+                //     Editable = false;
+                //     Importance = Promoted;
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the value of the VAT Customer Name field.';
+                // }
+                // field("VAT Address & Telephone"; Rec."VAT Address & Telephone")
+                // {
+                //     Editable = false;
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the value of the VAT Address & Telephone field.';
+                // }
+                // field("VAT Bank Name & Account"; Rec."VAT Bank Name & Account")
+                // {
+                //     Editable = false;
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the value of the VAT Bank Name & Account field.';
+                // }
+                // field("VAT Invoice Mail Address"; Rec."VAT Invoice Mail Address")
+                // {
+                //     Editable = false;
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the value of the VAT Invoice Mail Address field.';
+                // }
+                // field("VAT Contact Information"; Rec."VAT Contact Information")
+                // {
+                //     Editable = false;
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the value of the VAT Contact Information field.';
+                // }
             }
         }
         area(factboxes)
