@@ -103,8 +103,8 @@ End Function
         <Field Name="SalesHeader_No">
           <DataField>SalesHeader_No</DataField>
         </Field>
-        <Field Name="SalesHeader_PostingDate">
-          <DataField>SalesHeader_PostingDate</DataField>
+        <Field Name="SalesHeader_OrderDate">
+          <DataField>SalesHeader_OrderDate</DataField>
         </Field>
         <Field Name="SalesHeader_SalesCode">
           <DataField>SalesHeader_SalesCode</DataField>
@@ -139,11 +139,35 @@ End Function
         <Field Name="SalesHeader_YourReference">
           <DataField>SalesHeader_YourReference</DataField>
         </Field>
+        <Field Name="SalesHeader_ShipName">
+          <DataField>SalesHeader_ShipName</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipName2">
+          <DataField>SalesHeader_ShipName2</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipAddress">
+          <DataField>SalesHeader_ShipAddress</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipAddress2">
+          <DataField>SalesHeader_ShipAddress2</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipCity">
+          <DataField>SalesHeader_ShipCity</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipCountryCode">
+          <DataField>SalesHeader_ShipCountryCode</DataField>
+        </Field>
         <Field Name="SalesHeader_CustContact">
           <DataField>SalesHeader_CustContact</DataField>
         </Field>
-        <Field Name="SalesHeader_PostCode">
-          <DataField>SalesHeader_PostCode</DataField>
+        <Field Name="SalesHeader_ShipContact">
+          <DataField>SalesHeader_ShipContact</DataField>
+        </Field>
+        <Field Name="SalesHeader_SellContact">
+          <DataField>SalesHeader_SellContact</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipCountryName">
+          <DataField>SalesHeader_ShipCountryName</DataField>
         </Field>
         <Field Name="SalesHeader_CustCountryName">
           <DataField>SalesHeader_CustCountryName</DataField>
@@ -154,11 +178,17 @@ End Function
         <Field Name="SalesHeader_PaymentTermCode">
           <DataField>SalesHeader_PaymentTermCode</DataField>
         </Field>
-        <Field Name="PaymentMethodCode">
-          <DataField>PaymentMethodCode</DataField>
-        </Field>
         <Field Name="PaymentTermDescription">
           <DataField>PaymentTermDescription</DataField>
+        </Field>
+        <Field Name="PaymentMethodName">
+          <DataField>PaymentMethodName</DataField>
+        </Field>
+        <Field Name="ShipmentMethodName">
+          <DataField>ShipmentMethodName</DataField>
+        </Field>
+        <Field Name="SalesHeader_ShipmentDate">
+          <DataField>SalesHeader_ShipmentDate</DataField>
         </Field>
         <Field Name="TotalAmt">
           <DataField>TotalAmt</DataField>
@@ -166,44 +196,8 @@ End Function
         <Field Name="TotalAmtFormat">
           <DataField>TotalAmtFormat</DataField>
         </Field>
-        <Field Name="BankInfo11">
-          <DataField>BankInfo11</DataField>
-        </Field>
-        <Field Name="BankInfo12">
-          <DataField>BankInfo12</DataField>
-        </Field>
-        <Field Name="BankInfo13">
-          <DataField>BankInfo13</DataField>
-        </Field>
-        <Field Name="BankInfo14">
-          <DataField>BankInfo14</DataField>
-        </Field>
-        <Field Name="BankInfo21">
-          <DataField>BankInfo21</DataField>
-        </Field>
-        <Field Name="BankInfo22">
-          <DataField>BankInfo22</DataField>
-        </Field>
-        <Field Name="BankInfo23">
-          <DataField>BankInfo23</DataField>
-        </Field>
-        <Field Name="BankInfo24">
-          <DataField>BankInfo24</DataField>
-        </Field>
-        <Field Name="BankInfo31">
-          <DataField>BankInfo31</DataField>
-        </Field>
-        <Field Name="BankInfo32">
-          <DataField>BankInfo32</DataField>
-        </Field>
-        <Field Name="BankInfo33">
-          <DataField>BankInfo33</DataField>
-        </Field>
-        <Field Name="BankInfo34">
-          <DataField>BankInfo34</DataField>
-        </Field>
-        <Field Name="DocumentNo_SalesInvoiceLine">
-          <DataField>DocumentNo_SalesInvoiceLine</DataField>
+        <Field Name="DocumentNo_SalesLine">
+          <DataField>DocumentNo_SalesLine</DataField>
         </Field>
         <Field Name="SalesLine_LineNo">
           <DataField>SalesLine_LineNo</DataField>
@@ -232,29 +226,8 @@ End Function
         <Field Name="SalesLine_LineAmountFormat">
           <DataField>SalesLine_LineAmountFormat</DataField>
         </Field>
-        <Field Name="SalesLine_CrossNo">
-          <DataField>SalesLine_CrossNo</DataField>
-        </Field>
         <Field Name="Sorting">
           <DataField>Sorting</DataField>
-        </Field>
-        <Field Name="LineDiscount_SalesInvoiceLine">
-          <DataField>LineDiscount_SalesInvoiceLine</DataField>
-        </Field>
-        <Field Name="LineDiscount_SalesInvoiceLineFormat">
-          <DataField>LineDiscount_SalesInvoiceLineFormat</DataField>
-        </Field>
-        <Field Name="LineDiscountAmount_SalesInvoiceLine">
-          <DataField>LineDiscountAmount_SalesInvoiceLine</DataField>
-        </Field>
-        <Field Name="LineDiscountAmount_SalesInvoiceLineFormat">
-          <DataField>LineDiscountAmount_SalesInvoiceLineFormat</DataField>
-        </Field>
-        <Field Name="VAT_SalesInvoiceLine">
-          <DataField>VAT_SalesInvoiceLine</DataField>
-        </Field>
-        <Field Name="VAT_SalesInvoiceLineFormat">
-          <DataField>VAT_SalesInvoiceLineFormat</DataField>
         </Field>
       </Fields>
       <Query>

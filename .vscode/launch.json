@@ -1,19 +1,23 @@
 {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "name": "Microsoft cloud sandbox",
             "request": "launch",
             "type": "al",
-            "environmentType": "Sandbox",
-            "environmentName": "APAC-UAT",
             "tenant": "d1409b55-fd58-4730-9c0b-8d96619cefa7",
+            "environmentType": "Sandbox",
+            "environmentName": "APAC-TEST",
             "startupObjectId": 22,
             "startupObjectType": "Page",
             "breakOnError": "All",
             "launchBrowser": true,
             "enableLongRunningSqlStatements": true,
-            "enableSqlInformationDebugger": true
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync"
         }
     ]
 }

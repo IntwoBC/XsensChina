@@ -1,31 +1,32 @@
 {
-  "id": "005475a7-dff9-447e-96d4-2d757024334b",
-  "name": "XsensChina",
-  "publisher": "InTWO",
-  "version": "1.0.0.0",
+  "id": "f6a67d02-7384-4b07-a022-b37bbb0d5dc5",
+  "name": "Mcube Extension",
+  "publisher": "Bluepro/Chuudee",
+  "version": "1.0.2.2",
   "brief": "",
-  "description": "",
+  "description": "Provisional extension only including table extensions for upgrade. Integrated with Default publisher_XsensChina_1.0.0.0.app.",
   "privacyStatement": "",
   "EULA": "",
   "help": "",
   "url": "",
-  "logo": "",
+  "logo": "", 
+  "target": "Cloud",   
   "dependencies": [],
   "screenshots": [],
   "platform": "1.0.0.0",
-  "application": "19.0.0.0",
+  "application": "21.0.0.0",
   "idRanges": [
     {
       "from": 50000,
-      "to": 59999
+      "to": 99999
     }
   ],
   "resourceExposurePolicy": {
     "allowDebugging": true,
-    "allowDownloadingSource": true,
+    "allowDownloadingSource": false,
     "includeSourceInSymbolFile": true
   },
-  "runtime": "8.0",
+  "runtime": "10.0",
   "features": [
     "NoImplicitWith"
   ]

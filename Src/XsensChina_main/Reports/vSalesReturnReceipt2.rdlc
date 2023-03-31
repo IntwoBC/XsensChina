@@ -136,17 +136,14 @@ End Function
         <Field Name="SalesHeader_ShipContact">
           <DataField>SalesHeader_ShipContact</DataField>
         </Field>
-        <Field Name="OrderNo">
-          <DataField>OrderNo</DataField>
-        </Field>
         <Field Name="SalesHeader_ShipCountryName">
           <DataField>SalesHeader_ShipCountryName</DataField>
         </Field>
         <Field Name="SalesHeader_CurrencyCode">
           <DataField>SalesHeader_CurrencyCode</DataField>
         </Field>
-        <Field Name="DocumentNo_SalesShipmentLine">
-          <DataField>DocumentNo_SalesShipmentLine</DataField>
+        <Field Name="DocumentNo_ReturnReceiptLine">
+          <DataField>DocumentNo_ReturnReceiptLine</DataField>
         </Field>
         <Field Name="SalesLine_LineNo">
           <DataField>SalesLine_LineNo</DataField>
@@ -157,17 +154,11 @@ End Function
         <Field Name="SalesLine_Description">
           <DataField>SalesLine_Description</DataField>
         </Field>
-        <Field Name="SalesLine_CrossNo">
-          <DataField>SalesLine_CrossNo</DataField>
-        </Field>
         <Field Name="SalesLine_Quantity">
           <DataField>SalesLine_Quantity</DataField>
         </Field>
         <Field Name="SalesLine_QuantityFormat">
           <DataField>SalesLine_QuantityFormat</DataField>
-        </Field>
-        <Field Name="SalesLine_Description2">
-          <DataField>SalesLine_Description2</DataField>
         </Field>
         <Field Name="Sorting">
           <DataField>Sorting</DataField>
