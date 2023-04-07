@@ -25,8 +25,8 @@ page 50099 "Sales Order LT"
 
                     trigger OnAssistEdit()
                     begin
-                        IF Rec.AssistEdit(xRec) THEN
-                            CurrPage.UPDATE;
+                        if Rec.AssistEdit(xRec) then
+                            CurrPage.Update;
                     end;
                 }
                 field("Sell-to Customer No."; Rec."Sell-to Customer No.")
@@ -39,8 +39,11 @@ page 50099 "Sales Order LT"
 
                     trigger OnValidate()
                     begin
-                        Rec.SelltoCustomerNoOnAfterValidate(Rec, xRec);
-                        CurrPage.UPDATE;
+                        Rec."Shipment Date" := 0D;
+                        Rec."Payment Terms Code" := '';
+                        Rec."Payment Method Code" := '';
+                        Rec."Salesperson Code" := '';
+                        Rec."Currency Code" := '';
                     end;
                 }
                 field("Sell-to Customer Name"; Rec."Sell-to Customer Name")
@@ -54,14 +57,15 @@ page 50099 "Sales Order LT"
                     begin
                         Rec.SelltoCustomerNoOnAfterValidate(Rec, xRec);
 
-                        IF ApplicationAreaMgmtFacade.IsFoundationEnabled THEN
+                        if ApplicationAreaMgmtFacade.IsFoundationEnabled then
                             SalesCalcDiscountByType.ApplyDefaultInvoiceDiscount(0, Rec);
 
-                        CurrPage.UPDATE;
+                        CurrPage.Update;
                     end;
                 }
                 group(Control114)
                 {
+                    ShowCaption = false;
                     Visible = ShowQuoteNo;
                     field("Quote No."; Rec."Quote No.")
                     {
@@ -104,6 +108,7 @@ page 50099 "Sales Order LT"
                     }
                     group(Control123)
                     {
+                        ShowCaption = false;
                         Visible = IsSellToCountyVisible;
                         field("Sell-to County"; Rec."Sell-to County")
                         {
@@ -144,9 +149,9 @@ page 50099 "Sales Order LT"
 
                         trigger OnValidate()
                         begin
-                            IF Rec.GETFILTER("Sell-to Contact No.") = xRec."Sell-to Contact No." THEN
-                                IF Rec."Sell-to Contact No." <> xRec."Sell-to Contact No." THEN
-                                    Rec.SETRANGE("Sell-to Contact No.");
+                            if Rec.GetFilter("Sell-to Contact No.") = xRec."Sell-to Contact No." then
+                                if Rec."Sell-to Contact No." <> xRec."Sell-to Contact No." then
+                                    Rec.SetRange("Sell-to Contact No.");
                         end;
                     }
                     field("Sell-to Phone No."; Rec."Sell-to Phone No.")
@@ -173,12 +178,10 @@ page 50099 "Sales Order LT"
                 field("Sell-to Contact E-mail"; Rec."Sell-to Contact E-mail")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Sell-to Contact E-mail field.';
                 }
                 field("Sell-to Contact Phone"; Rec."Sell-to Contact Phone")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Sell-to Contact Phone field.';
                 }
                 field("No. of Archived Versions"; Rec."No. of Archived Versions")
                 {
@@ -250,13 +253,14 @@ page 50099 "Sales Order LT"
                     trigger OnValidate()
                     begin
                         SalespersonCodeOnAfterValidate;
+                        //Rec.PopulateCustomFields();
                     end;
                 }
                 field("Salesperson Code IT"; Rec."Salesperson Code IT")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Salesperson Code IT field.';
                 }
+
                 field("Campaign No."; Rec."Campaign No.")
                 {
                     ApplicationArea = RelationshipMgmt;
@@ -271,7 +275,7 @@ page 50099 "Sales Order LT"
                 }
                 field("Responsibility Center"; Rec."Responsibility Center")
                 {
-                    AccessByPermission = TableData 5714 = R;
+                    AccessByPermission = TableData "Responsibility Center" = R;
                     ApplicationArea = Basic, Suite;
                     Importance = Additional;
                     ToolTip = 'Specifies the code of the responsibility center, such as a distribution hub, that is associated with the involved user, company, customer, or vendor.';
@@ -292,12 +296,10 @@ page 50099 "Sales Order LT"
                 field(ExternalID; Rec.ExternalID)
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the ExternalID field.';
                 }
                 field("SalesForce Comment"; Rec."SalesForce Comment")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the SalesForce Comment field.';
                 }
                 field(Status; Rec.Status)
                 {
@@ -306,10 +308,9 @@ page 50099 "Sales Order LT"
                     QuickEntry = false;
                     ToolTip = 'Specifies whether the document is open, waiting to be approved, has been invoiced for prepayment, or has been released to the next stage of processing.';
                 }
-                field("Created By Rapidi"; Rec."Created By Rapidi")
+                field("VAT Registration No."; Rec."VAT Registration No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Created By Rapidi field.';
                 }
                 group("Work Description")
                 {
@@ -317,7 +318,6 @@ page 50099 "Sales Order LT"
                     field("Comment 2"; Rec."Comment 2")
                     {
                         ApplicationArea = All;
-                        ToolTip = 'Specifies the value of the Comment 2 field.';
                     }
                     field(WorkDescription; WorkDescription)
                     {
@@ -334,7 +334,7 @@ page 50099 "Sales Order LT"
                     }
                 }
             }
-            part(SalesLines; 46)
+            part(SalesLines; "Sales Order Subform")
             {
                 ApplicationArea = Basic, Suite;
                 Editable = DynamicEditable;
@@ -353,28 +353,29 @@ page 50099 "Sales Order LT"
 
                     trigger OnAssistEdit()
                     begin
-                        CLEAR(ChangeExchangeRate);
-                        IF Rec."Posting Date" <> 0D THEN
+                        Clear(ChangeExchangeRate);
+                        if Rec."Posting Date" <> 0D then
                             ChangeExchangeRate.SetParameter(Rec."Currency Code", Rec."Currency Factor", Rec."Posting Date")
-                        ELSE
-                            ChangeExchangeRate.SetParameter(Rec."Currency Code", Rec."Currency Factor", WORKDATE);
-                        IF ChangeExchangeRate.RUNMODAL = ACTION::OK THEN BEGIN
-                            Rec.VALIDATE("Currency Factor", ChangeExchangeRate.GetParameter);
+                        else
+                            ChangeExchangeRate.SetParameter(Rec."Currency Code", Rec."Currency Factor", WorkDate);
+                        if ChangeExchangeRate.RunModal = ACTION::OK then begin
+                            Rec.Validate("Currency Factor", ChangeExchangeRate.GetParameter);
                             SaveInvoiceDiscountAmount;
-                        END;
-                        CLEAR(ChangeExchangeRate);
+                        end;
+                        Clear(ChangeExchangeRate);
+
                     end;
 
                     trigger OnValidate()
                     begin
-                        CurrPage.SAVERECORD;
+                        CurrPage.SaveRecord;
                         SalesCalcDiscountByType.ApplyDefaultInvoiceDiscount(0, Rec);
+                        //Rec.PopulateCustomFields();
                     end;
                 }
                 field("Currency Code IT"; Rec."Currency Code IT")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Currency Code IT field.';
                 }
                 field("Prices Including VAT"; Rec."Prices Including VAT")
                 {
@@ -393,10 +394,10 @@ page 50099 "Sales Order LT"
 
                     trigger OnValidate()
                     begin
-                        IF ApplicationAreaMgmtFacade.IsFoundationEnabled THEN
+                        if ApplicationAreaMgmtFacade.IsFoundationEnabled then
                             SalesCalcDiscountByType.ApplyDefaultInvoiceDiscount(0, Rec);
 
-                        CurrPage.UPDATE;
+                        CurrPage.Update;
                     end;
                 }
                 field("Payment Terms Code"; Rec."Payment Terms Code")
@@ -404,11 +405,14 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Basic, Suite;
                     Importance = Promoted;
                     ToolTip = 'Specifies a formula that calculates the payment due date, payment discount date, and payment discount amount.';
+                    trigger OnValidate()
+                    begin
+                        //   Rec.PopulateCustomFields();
+                    end;
                 }
                 field("Payment Terms Code IT"; Rec."Payment Terms Code IT")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Payment Terms Code IT field.';
                 }
                 field("Payment Method Code"; Rec."Payment Method Code")
                 {
@@ -419,12 +423,16 @@ page 50099 "Sales Order LT"
                     trigger OnValidate()
                     begin
                         UpdatePaymentService;
+                        // Rec.PopulateCustomFields();
                     end;
                 }
                 field("Payment Method Code IT"; Rec."Payment Method Code IT")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Payment Method Code IT field.';
+                }
+                field("Created By Rapidi"; Rec."Created By Rapidi")
+                {
+                    ApplicationArea = All;
                 }
                 field("EU 3-Party Trade"; Rec."EU 3-Party Trade")
                 {
@@ -433,6 +441,7 @@ page 50099 "Sales Order LT"
                 }
                 group(Control76)
                 {
+                    ShowCaption = false;
                     Visible = PaymentServiceVisible;
                     field(SelectedPayments; Rec.GetSelectedPaymentServicesText)
                     {
@@ -472,7 +481,10 @@ page 50099 "Sales Order LT"
                 field("Shortcut Dimension 4 Code"; Rec."Shortcut Dimension 4 Code")
                 {
                     ApplicationArea = Dimensions;
-                    ToolTip = 'Specifies the value of the Shortcut Dimension 2 Code field.';
+                    trigger OnValidate()
+                    begin
+                        ShortcutDimension1CodeOnAfterV;
+                    end;
                 }
                 field("Payment Discount %"; Rec."Payment Discount %")
                 {
@@ -496,8 +508,10 @@ page 50099 "Sales Order LT"
                 Caption = 'Shipping and Billing';
                 group(Control91)
                 {
+                    ShowCaption = false;
                     group(Control90)
                     {
+                        ShowCaption = false;
                         field(ShippingOptions; ShipToOptions)
                         {
                             ApplicationArea = Basic, Suite;
@@ -510,35 +524,36 @@ page 50099 "Sales Order LT"
                                 ShipToAddress: Record "Ship-to Address";
                                 ShipToAddressList: Page "Ship-to Address List";
                             begin
-                                CASE ShipToOptions OF
+                                case ShipToOptions of
                                     ShipToOptions::"Default (Sell-to Address)":
-                                        BEGIN
-                                            Rec.VALIDATE("Ship-to Code", '');
+                                        begin
+                                            Rec.Validate("Ship-to Code", '');
                                             Rec.CopySellToAddressToShipToAddress;
-                                        END;
+                                        end;
                                     ShipToOptions::"Alternate Shipping Address":
-                                        BEGIN
-                                            ShipToAddress.SETRANGE("Customer No.", Rec."Sell-to Customer No.");
-                                            ShipToAddressList.LOOKUPMODE := TRUE;
-                                            ShipToAddressList.SETTABLEVIEW(ShipToAddress);
+                                        begin
+                                            ShipToAddress.SetRange("Customer No.", Rec."Sell-to Customer No.");
+                                            ShipToAddressList.LookupMode := true;
+                                            ShipToAddressList.SetTableView(ShipToAddress);
 
-                                            IF ShipToAddressList.RUNMODAL = ACTION::LookupOK THEN BEGIN
-                                                ShipToAddressList.GETRECORD(ShipToAddress);
-                                                Rec.VALIDATE("Ship-to Code", ShipToAddress.Code);
+                                            if ShipToAddressList.RunModal = ACTION::LookupOK then begin
+                                                ShipToAddressList.GetRecord(ShipToAddress);
+                                                Rec.Validate("Ship-to Code", ShipToAddress.Code);
                                                 IsShipToCountyVisible := FormatAddress.UseCounty(ShipToAddress."Country/Region Code");
-                                            END ELSE
+                                            end else
                                                 ShipToOptions := ShipToOptions::"Custom Address";
-                                        END;
+                                        end;
                                     ShipToOptions::"Custom Address":
-                                        BEGIN
-                                            Rec.VALIDATE("Ship-to Code", '');
+                                        begin
+                                            Rec.Validate("Ship-to Code", '');
                                             IsShipToCountyVisible := FormatAddress.UseCounty(Rec."Ship-to Country/Region Code");
-                                        END;
-                                END;
+                                        end;
+                                end;
                             end;
                         }
                         group(Control4)
                         {
+                            ShowCaption = false;
                             Visible = NOT (ShipToOptions = ShipToOptions::"Default (Sell-to Address)");
                             field("Ship-to Code"; Rec."Ship-to Code")
                             {
@@ -551,13 +566,13 @@ page 50099 "Sales Order LT"
                                 var
                                     ShipToAddress: Record "Ship-to Address";
                                 begin
-                                    IF (xRec."Ship-to Code" <> '') AND (Rec."Ship-to Code" = '') THEN
-                                        ERROR(EmptyShipToCodeErr);
-                                    IF Rec."Ship-to Code" <> '' THEN BEGIN
-                                        ShipToAddress.GET(Rec."Sell-to Customer No.", Rec."Ship-to Code");
+                                    if (xRec."Ship-to Code" <> '') and (Rec."Ship-to Code" = '') then
+                                        Error(EmptyShipToCodeErr);
+                                    if Rec."Ship-to Code" <> '' then begin
+                                        ShipToAddress.Get(Rec."Sell-to Customer No.", Rec."Ship-to Code");
                                         IsShipToCountyVisible := FormatAddress.UseCounty(ShipToAddress."Country/Region Code");
-                                    END ELSE
-                                        IsShipToCountyVisible := FALSE;
+                                    end else
+                                        IsShipToCountyVisible := false;
                                 end;
                             }
                             field("Ship-to Name"; Rec."Ship-to Name")
@@ -589,6 +604,7 @@ page 50099 "Sales Order LT"
                             }
                             group(Control297)
                             {
+                                ShowCaption = false;
                                 Visible = IsShipToCountyVisible;
                                 field("Ship-to County"; Rec."Ship-to County")
                                 {
@@ -660,6 +676,7 @@ page 50099 "Sales Order LT"
                 }
                 group(Control85)
                 {
+                    ShowCaption = false;
                     field(BillToOptions; BillToOptions)
                     {
                         ApplicationArea = Basic, Suite;
@@ -669,16 +686,17 @@ page 50099 "Sales Order LT"
 
                         trigger OnValidate()
                         begin
-                            IF BillToOptions = BillToOptions::"Default (Customer)" THEN BEGIN
-                                Rec.VALIDATE("Bill-to Customer No.", Rec."Sell-to Customer No.");
+                            if BillToOptions = BillToOptions::"Default (Customer)" then begin
+                                Rec.Validate("Bill-to Customer No.", Rec."Sell-to Customer No.");
                                 Rec.RecallModifyAddressNotification(Rec.GetModifyBillToCustomerAddressNotificationId);
-                            END;
+                            end;
 
                             Rec.CopySellToAddressToBillToAddress;
                         end;
                     }
                     group(Control82)
                     {
+                        ShowCaption = false;
                         Visible = NOT (BillToOptions = BillToOptions::"Default (Customer)");
                         field("Bill-to Name"; Rec."Bill-to Name")
                         {
@@ -689,15 +707,15 @@ page 50099 "Sales Order LT"
 
                             trigger OnValidate()
                             begin
-                                IF Rec.GETFILTER("Bill-to Customer No.") = xRec."Bill-to Customer No." THEN
-                                    IF Rec."Bill-to Customer No." <> xRec."Bill-to Customer No." THEN
-                                        Rec.SETRANGE("Bill-to Customer No.");
+                                if Rec.GetFilter("Bill-to Customer No.") = xRec."Bill-to Customer No." then
+                                    if Rec."Bill-to Customer No." <> xRec."Bill-to Customer No." then
+                                        Rec.SetRange("Bill-to Customer No.");
 
-                                CurrPage.SAVERECORD;
-                                IF ApplicationAreaMgmtFacade.IsFoundationEnabled THEN
+                                CurrPage.SaveRecord;
+                                if ApplicationAreaMgmtFacade.IsFoundationEnabled then
                                     SalesCalcDiscountByType.ApplyDefaultInvoiceDiscount(0, Rec);
 
-                                CurrPage.UPDATE(FALSE);
+                                CurrPage.Update(false);
                             end;
                         }
                         field("Bill-to Address"; Rec."Bill-to Address")
@@ -726,6 +744,7 @@ page 50099 "Sales Order LT"
                         }
                         group(Control130)
                         {
+                            ShowCaption = false;
                             Visible = IsBillToCountyVisible;
                             field("Bill-to County"; Rec."Bill-to County")
                             {
@@ -782,11 +801,14 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Basic, Suite;
                     Importance = Promoted;
                     ToolTip = 'Specifies when items on the document are shipped or were shipped. A shipment date is usually calculated from a requested delivery date plus lead time.';
+                    trigger OnValidate()
+                    begin
+                        // Rec.PopulateCustomFields();
+                    end;
                 }
                 field("Shipment Date IT"; Rec."Shipment Date IT")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Shipment Date IT field.';
                 }
                 field("Shipping Advice"; Rec."Shipping Advice")
                 {
@@ -798,10 +820,9 @@ page 50099 "Sales Order LT"
                     var
                         ConfirmManagement: Codeunit "Confirm Management";
                     begin
-                        IF Rec."Shipping Advice" <> xRec."Shipping Advice" THEN
-                            //IF NOT ConfirmManagement.ConfirmProcess(STRSUBSTNO(Text001, Rec.FIELDCAPTION("Shipping Advice")), TRUE) THEN
-                           if ConfirmManagement.GetResponse(STRSUBSTNO(Text001, Rec.FIELDCAPTION("Shipping Advice")), TRUE) then
-                                ERROR(Text002);
+                        // if Rec."Shipping Advice" <> xRec."Shipping Advice" then
+                        //     if not ConfirmManagement.ConfirmProcess(StrSubstNo(Text001, Rec.FieldCaption("Shipping Advice")), true) then
+                        //         Error(Text002);
                     end;
                 }
                 field("Outbound Whse. Handling Time"; Rec."Outbound Whse. Handling Time")
@@ -846,13 +867,13 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies the point of exit through which you ship the items out of your country/region, for reporting to Intrastat.';
                 }
-                //         field(Area;Area)
-                // {
-                //             ApplicationArea = Suite;
-                //             ToolTip = 'Specifies the area of the customer or vendor, for the purpose of reporting to INTRASTAT.';
-                // }
+                field("Area"; Rec.Area)
+                {
+                    ApplicationArea = Suite;
+                    ToolTip = 'Specifies the area of the customer or vendor, for the purpose of reporting to INTRASTAT.';
+                }
             }
-            group(Prepayment1)
+            group(Control1900201301)
             {
                 Caption = 'Prepayment';
                 field("Prepayment %"; Rec."Prepayment %")
@@ -893,40 +914,10 @@ page 50099 "Sales Order LT"
                     ToolTip = 'Specifies the last date the customer can pay the prepayment invoice and still receive a payment discount on the prepayment amount.';
                 }
             }
-            group("Chinese Localization")
-            {
-                Caption = 'Chinese Localization';
-                // field("VAT Customer Name"; Rec."VAT Customer Name")
-                // {
-                //     Importance = Promoted;
-                //     ApplicationArea = All;
-                //     ToolTip = 'Specifies the value of the VAT Customer Name field.';
-                // }
-                // field("VAT Address & Telephone"; Rec."VAT Address & Telephone")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Specifies the value of the VAT Address & Telephone field.';
-                // }
-                // field("VAT Bank Name & Account"; Rec."VAT Bank Name & Account")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Specifies the value of the VAT Bank Name & Account field.';
-                // }
-                // field("VAT Invoice Mail Address"; Rec."VAT Invoice Mail Address")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Specifies the value of the VAT Invoice Mail Address field.';
-                // }
-                // field("VAT Contact Information"; Rec."VAT Contact Information")
-                // {
-                //     ApplicationArea = All;
-                //     ToolTip = 'Specifies the value of the VAT Contact Information field.';
-                // }
-            }
         }
         area(factboxes)
         {
-            part("Attached Documents"; 1174)
+            part("Attached Documents"; "Document Attachment Factbox")
             {
                 ApplicationArea = All;
                 Caption = 'Attachments';
@@ -934,7 +925,7 @@ page 50099 "Sales Order LT"
                               "No." = FIELD("No."),
                               "Document Type" = FIELD("Document Type");
             }
-            part("Pending Approval FactBox"; "Pending Approval FactBox")
+            part(Control35; "Pending Approval FactBox")
             {
                 ApplicationArea = All;
                 SubPageLink = "Table ID" = CONST(36),
@@ -942,23 +933,23 @@ page 50099 "Sales Order LT"
                               "Document No." = FIELD("No.");
                 Visible = OpenApprovalEntriesExistForCurrUser;
             }
-            part("Sales Hist. Sell-to FactBox"; "Sales Hist. Sell-to FactBox")
+            part(Control1903720907; "Sales Hist. Sell-to FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 SubPageLink = "No." = FIELD("Sell-to Customer No.");
             }
-            part("Customer Statistics FactBox"; "Customer Statistics FactBox")
+            part(Control1902018507; "Customer Statistics FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 SubPageLink = "No." = FIELD("Bill-to Customer No.");
                 Visible = false;
             }
-            part("Customer Details FactBox"; "Customer Details FactBox")
+            part(Control1900316107; "Customer Details FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 SubPageLink = "No." = FIELD("Sell-to Customer No.");
             }
-            part("Sales Line FactBox"; "Sales Line FactBox")
+            part(Control1906127307; "Sales Line FactBox")
             {
                 ApplicationArea = Suite;
                 Provider = SalesLines;
@@ -966,7 +957,7 @@ page 50099 "Sales Order LT"
                               "Document No." = FIELD("Document No."),
                               "Line No." = FIELD("Line No.");
             }
-            part("Item Invoicing FactBox"; "Item Invoicing FactBox")
+            part(Control1901314507; "Item Invoicing FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 Provider = SalesLines;
@@ -977,33 +968,33 @@ page 50099 "Sales Order LT"
                 ApplicationArea = Basic, Suite;
                 Visible = false;
             }
-            part(IncomingDocAttachFactBox; 193)
+            part(IncomingDocAttachFactBox; "Incoming Doc. Attach. FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 ShowFilter = false;
                 Visible = false;
             }
-            part("Resource Details FactBox"; "Resource Details FactBox")
+            part(Control1907012907; "Resource Details FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 Provider = SalesLines;
                 SubPageLink = "No." = FIELD("No.");
                 Visible = false;
             }
-            part("Item Warehouse FactBox"; "Item Warehouse FactBox")
+            part(Control1901796907; "Item Warehouse FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 Provider = SalesLines;
                 SubPageLink = "No." = FIELD("No.");
                 Visible = false;
             }
-            part("Sales Hist. Bill-to FactBox"; "Sales Hist. Bill-to FactBox")
+            part(Control1907234507; "Sales Hist. Bill-to FactBox")
             {
                 ApplicationArea = Basic, Suite;
                 SubPageLink = "No." = FIELD("Bill-to Customer No.");
                 Visible = false;
             }
-            part(WorkflowStatus; 1528)
+            part(WorkflowStatus; "Workflow Status FactBox")
             {
                 ApplicationArea = All;
                 Editable = false;
@@ -1011,12 +1002,12 @@ page 50099 "Sales Order LT"
                 ShowFilter = false;
                 Visible = ShowWorkflowStatus;
             }
-            systempart(Links; Links)
+            systempart(Control1900383207; Links)
             {
                 ApplicationArea = RecordLinks;
                 Visible = false;
             }
-            systempart(Notes; Notes)
+            systempart(Control1905767507; Notes)
             {
                 ApplicationArea = Notes;
             }
@@ -1047,10 +1038,10 @@ page 50099 "Sales Order LT"
                         Handled: Boolean;
                     begin
                         OnBeforeStatisticsAction(Rec, Handled);
-                        IF NOT Handled THEN BEGIN
+                        if not Handled then begin
                             Rec.OpenSalesOrderStatistics;
                             SalesCalcDiscountByType.ResetRecalculateInvoiceDisc(Rec);
-                        END
+                        end
                     end;
                 }
                 action(Customer)
@@ -1061,7 +1052,7 @@ page 50099 "Sales Order LT"
                     Image = Customer;
                     Promoted = true;
                     PromotedCategory = Category12;
-                    RunObject = Page 21;
+                    RunObject = Page "Customer Card";
                     RunPageLink = "No." = FIELD("Sell-to Customer No."),
                                   "Date Filter" = FIELD("Date Filter");
                     ShortCutKey = 'Shift+F7';
@@ -1069,7 +1060,7 @@ page 50099 "Sales Order LT"
                 }
                 action(Dimensions)
                 {
-                    AccessByPermission = TableData 348 = R;
+                    AccessByPermission = TableData Dimension = R;
                     ApplicationArea = Dimensions;
                     Caption = 'Dimensions';
                     Enabled = Rec."No." <> '';
@@ -1083,12 +1074,12 @@ page 50099 "Sales Order LT"
                     trigger OnAction()
                     begin
                         Rec.ShowDocDim;
-                        CurrPage.SAVERECORD;
+                        CurrPage.SaveRecord;
                     end;
                 }
                 action(Approvals)
                 {
-                    AccessByPermission = TableData 454 = R;
+                    AccessByPermission = TableData "Approval Entry" = R;
                     ApplicationArea = Suite;
                     Caption = 'Approvals';
                     Image = Approvals;
@@ -1099,8 +1090,9 @@ page 50099 "Sales Order LT"
                     trigger OnAction()
                     var
                         WorkflowsEntriesBuffer: Record "Workflows Entries Buffer";
+                        ApprovalMgmt: Codeunit "Approvals Mgmt.";
                     begin
-                        WorkflowsEntriesBuffer.RunWorkflowEntriesPage(Rec.RECORDID, DATABASE::"Sales Header", Rec."Document Type", Rec."No.");
+                        ApprovalMgmt.RunWorkflowEntriesPage(Rec.RecordId, DATABASE::"Sales Header", Rec."Document Type", Rec."No.");
                     end;
                 }
                 action("Co&mments")
@@ -1110,7 +1102,7 @@ page 50099 "Sales Order LT"
                     Image = ViewComments;
                     Promoted = true;
                     PromotedCategory = Category8;
-                    RunObject = Page 67;
+                    RunObject = Page "Sales Comment Sheet";
                     RunPageLink = "Document Type" = FIELD("Document Type"),
                                   "No." = FIELD("No."),
                                   "Document Line No." = CONST(0);
@@ -1118,7 +1110,7 @@ page 50099 "Sales Order LT"
                 }
                 action(AssemblyOrders)
                 {
-                    AccessByPermission = TableData 90 = R;
+                    AccessByPermission = TableData "BOM Component" = R;
                     ApplicationArea = Assembly;
                     Caption = 'Assembly Orders';
                     Image = AssemblyOrder;
@@ -1145,9 +1137,9 @@ page 50099 "Sales Order LT"
                         DocumentAttachmentDetails: Page "Document Attachment Details";
                         RecRef: RecordRef;
                     begin
-                        RecRef.GETTABLE(Rec);
+                        RecRef.GetTable(Rec);
                         DocumentAttachmentDetails.OpenForRecRef(RecRef);
-                        DocumentAttachmentDetails.RUNMODAL;
+                        DocumentAttachmentDetails.RunModal;
                     end;
                 }
             }
@@ -1167,7 +1159,7 @@ page 50099 "Sales Order LT"
                     var
                         CRMIntegrationManagement: Codeunit "CRM Integration Management";
                     begin
-                        CRMIntegrationManagement.ShowCRMEntityFromRecordID(Rec.RECORDID);
+                        CRMIntegrationManagement.ShowCRMEntityFromRecordID(Rec.RecordId);
                     end;
                 }
             }
@@ -1182,7 +1174,7 @@ page 50099 "Sales Order LT"
                     Image = Shipment;
                     Promoted = true;
                     PromotedCategory = Category12;
-                    RunObject = Page 142;
+                    RunObject = Page "Posted Sales Shipments";
                     RunPageLink = "Order No." = FIELD("No.");
                     RunPageView = SORTING("Order No.");
                     ToolTip = 'View related posted sales shipments.';
@@ -1194,7 +1186,7 @@ page 50099 "Sales Order LT"
                     Image = Invoice;
                     Promoted = true;
                     PromotedCategory = Category12;
-                    RunObject = Page 143;
+                    RunObject = Page "Posted Sales Invoices";
                     RunPageLink = "Order No." = FIELD("No.");
                     RunPageView = SORTING("Order No.");
                     ToolTip = 'View a list of ongoing sales invoices for the order.';
@@ -1209,7 +1201,7 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Warehouse;
                     Caption = 'In&vt. Put-away/Pick Lines';
                     Image = PickLines;
-                    RunObject = Page 5774;
+                    RunObject = Page "Warehouse Activity List";
                     RunPageLink = "Source Document" = CONST("Sales Order"),
                                   "Source No." = FIELD("No.");
                     RunPageView = SORTING("Source Document", "Source No.", "Location Code");
@@ -1220,9 +1212,11 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Warehouse;
                     Caption = 'Warehouse Shipment Lines';
                     Image = ShipmentLines;
-                    RunObject = Page 7341;
+                    RunObject = Page "Whse. Shipment Lines";
                     RunPageLink = "Source Type" = CONST(37),
+#pragma warning disable AL0603
                                   "Source Subtype" = FIELD("Document Type"),
+#pragma warning restore AL0603
                                   "Source No." = FIELD("No.");
                     RunPageView = SORTING("Source Type", "Source Subtype", "Source No.", "Source Line No.");
                     ToolTip = 'View ongoing warehouse shipments for the document, in advanced warehouse configurations.';
@@ -1237,7 +1231,7 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Prepayments;
                     Caption = 'Prepa&yment Invoices';
                     Image = PrepaymentInvoice;
-                    RunObject = Page 143;
+                    RunObject = Page "Posted Sales Invoices";
                     RunPageLink = "Prepayment Order No." = FIELD("No.");
                     RunPageView = SORTING("Prepayment Order No.");
                     ToolTip = 'View related posted sales invoices that involve a prepayment. ';
@@ -1247,7 +1241,7 @@ page 50099 "Sales Order LT"
                     ApplicationArea = Prepayments;
                     Caption = 'Prepayment Credi&t Memos';
                     Image = PrepaymentCreditMemo;
-                    RunObject = Page 144;
+                    RunObject = Page "Posted Sales Credit Memos";
                     RunPageLink = "Prepayment Order No." = FIELD("No.");
                     RunPageView = SORTING("Prepayment Order No.");
                     ToolTip = 'View related posted sales credit memos that involve a prepayment. ';
@@ -1294,7 +1288,7 @@ page 50099 "Sales Order LT"
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     begin
-                        ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RECORDID);
+                        ApprovalsMgmt.ApproveRecordApprovalRequest(Rec.RecordId);
                     end;
                 }
                 action(Reject)
@@ -1313,7 +1307,7 @@ page 50099 "Sales Order LT"
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     begin
-                        ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RECORDID);
+                        ApprovalsMgmt.RejectRecordApprovalRequest(Rec.RecordId);
                     end;
                 }
                 action(Delegate)
@@ -1331,7 +1325,7 @@ page 50099 "Sales Order LT"
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     begin
-                        ApprovalsMgmt.DelegateRecordApprovalRequest(Rec.RECORDID);
+                        ApprovalsMgmt.DelegateRecordApprovalRequest(Rec.RecordId);
                     end;
                 }
                 action(Comment)
@@ -1353,7 +1347,7 @@ page 50099 "Sales Order LT"
                     end;
                 }
             }
-            group(Release_)
+            group(Action21)
             {
                 Caption = 'Release';
                 Image = ReleaseDoc;
@@ -1440,14 +1434,14 @@ page 50099 "Sales Order LT"
                             SelectedSalesLine: Record "Sales Line";
                             PurchDocFromSalesDoc: Codeunit "Purch. Doc. From Sales Doc.";
                         begin
-                            CurrPage.SalesLines.PAGE.SETSELECTIONFILTER(SelectedSalesLine);
+                            CurrPage.SalesLines.PAGE.SetSelectionFilter(SelectedSalesLine);
                             PurchDocFromSalesDoc.CreatePurchaseInvoice(Rec, SelectedSalesLine);
                         end;
                     }
                 }
                 action(CalculateInvoiceDiscount)
                 {
-                    AccessByPermission = TableData 19 = R;
+                    AccessByPermission = TableData "Cust. Invoice Disc." = R;
                     ApplicationArea = Basic, Suite;
                     Caption = 'Calculate &Invoice Discount';
                     Image = CalculateInvoiceDiscount;
@@ -1491,9 +1485,9 @@ page 50099 "Sales Order LT"
                     trigger OnAction()
                     begin
                         CopySalesDoc.SetSalesHeader(Rec);
-                        CopySalesDoc.RUNMODAL;
-                        CLEAR(CopySalesDoc);
-                        IF Rec.GET(Rec."Document Type", Rec."No.") THEN;
+                        CopySalesDoc.RunModal;
+                        Clear(CopySalesDoc);
+                        if Rec.Get(Rec."Document Type", Rec."No.") then;
                     end;
                 }
                 action(MoveNegativeLines)
@@ -1506,9 +1500,9 @@ page 50099 "Sales Order LT"
 
                     trigger OnAction()
                     begin
-                        CLEAR(MoveNegSalesLines);
+                        Clear(MoveNegSalesLines);
                         MoveNegSalesLines.SetSalesHeader(Rec);
-                        MoveNegSalesLines.RUNMODAL;
+                        MoveNegSalesLines.RunModal;
                         MoveNegSalesLines.ShowDocument;
                     end;
                 }
@@ -1522,12 +1516,12 @@ page 50099 "Sales Order LT"
                     trigger OnAction()
                     begin
                         ArchiveManagement.ArchiveSalesDocument(Rec);
-                        CurrPage.UPDATE(FALSE);
+                        CurrPage.Update(false);
                     end;
                 }
                 action("Send IC Sales Order")
                 {
-                    AccessByPermission = TableData 410 = R;
+                    AccessByPermission = TableData "IC G/L Account" = R;
                     ApplicationArea = Intercompany;
                     Caption = 'Send IC Sales Order';
                     Image = IntercompanyOrder;
@@ -1538,8 +1532,8 @@ page 50099 "Sales Order LT"
                         ICInOutboxMgt: Codeunit ICInboxOutboxMgt;
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     begin
-                        IF ApprovalsMgmt.PrePostApprovalCheckSales(Rec) THEN
-                            ICInOutboxMgt.SendSalesDoc(Rec, FALSE);
+                        if ApprovalsMgmt.PrePostApprovalCheckSales(Rec) then
+                            ICInOutboxMgt.SendSalesDoc(Rec, false);
                     end;
                 }
                 group(IncomingDocument)
@@ -1563,7 +1557,7 @@ page 50099 "Sales Order LT"
                     }
                     action(SelectIncomingDoc)
                     {
-                        AccessByPermission = TableData 130 = R;
+                        AccessByPermission = TableData "Incoming Document" = R;
                         ApplicationArea = Basic, Suite;
                         Caption = 'Select Incoming Document';
                         Image = SelectLineToApply;
@@ -1573,7 +1567,7 @@ page 50099 "Sales Order LT"
                         var
                             IncomingDocument: Record "Incoming Document";
                         begin
-                            Rec.VALIDATE("Incoming Document Entry No.", IncomingDocument.SelectIncomingDocument(Rec."Incoming Document Entry No.", Rec.RECORDID));
+                            Rec.Validate("Incoming Document Entry No.", IncomingDocument.SelectIncomingDocument(Rec."Incoming Document Entry No.", Rec.RecordId));
                         end;
                     }
                     action(IncomingDocAttachFile)
@@ -1604,10 +1598,10 @@ page 50099 "Sales Order LT"
                         var
                             IncomingDocument: Record "Incoming Document";
                         begin
-                            IF IncomingDocument.GET(Rec."Incoming Document Entry No.") THEN
+                            if IncomingDocument.Get(Rec."Incoming Document Entry No.") then
                                 IncomingDocument.RemoveLinkToRelatedRecord;
                             Rec."Incoming Document Entry No." := 0;
-                            Rec.MODIFY(TRUE);
+                            Rec.Modify(true);
                         end;
                     }
                 }
@@ -1618,7 +1612,7 @@ page 50099 "Sales Order LT"
                 Image = Planning;
                 action(OrderPromising)
                 {
-                    AccessByPermission = TableData 99000880 = R;
+                    AccessByPermission = TableData "Order Promising Line" = R;
                     ApplicationArea = OrderPromising;
                     Caption = 'Order &Promising';
                     Image = OrderPromising;
@@ -1628,9 +1622,9 @@ page 50099 "Sales Order LT"
                     var
                         OrderPromisingLine: Record "Order Promising Line" temporary;
                     begin
-                        OrderPromisingLine.SETRANGE("Source Type", Rec."Document Type");
-                        OrderPromisingLine.SETRANGE("Source ID", Rec."No.");
-                        PAGE.RUNMODAL(PAGE::"Order Promising Lines", OrderPromisingLine);
+                        OrderPromisingLine.SetRange("Source Type", Rec."Document Type");
+                        OrderPromisingLine.SetRange("Source ID", Rec."No.");
+                        PAGE.RunModal(PAGE::"Order Promising Lines", OrderPromisingLine);
                     end;
                 }
                 action("Demand Overview")
@@ -1644,9 +1638,9 @@ page 50099 "Sales Order LT"
                     var
                         DemandOverview: Page "Demand Overview";
                     begin
-                        DemandOverview.SetCalculationParameter(TRUE);
+                        DemandOverview.SetCalculationParameter(true);
                         DemandOverview.Initialize(0D, 1, Rec."No.", '', '');
-                        DemandOverview.RUNMODAL;
+                        DemandOverview.RunModal;
                     end;
                 }
                 action("Pla&nning")
@@ -1661,7 +1655,7 @@ page 50099 "Sales Order LT"
                         SalesPlanForm: Page "Sales Order Planning";
                     begin
                         SalesPlanForm.SetSalesOrder(Rec."No.");
-                        SalesPlanForm.RUNMODAL;
+                        SalesPlanForm.RunModal;
                     end;
                 }
             }
@@ -1684,7 +1678,7 @@ page 50099 "Sales Order LT"
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     begin
-                        IF ApprovalsMgmt.CheckSalesApprovalPossible(Rec) THEN
+                        if ApprovalsMgmt.CheckSalesApprovalPossible(Rec) then
                             ApprovalsMgmt.OnSendSalesDocForApproval(Rec);
                     end;
                 }
@@ -1704,7 +1698,7 @@ page 50099 "Sales Order LT"
                         WorkflowWebhookMgt: Codeunit "Workflow Webhook Management";
                     begin
                         ApprovalsMgmt.OnCancelSalesApprovalRequest(Rec);
-                        WorkflowWebhookMgt.FindAndCancel(Rec.RECORDID);
+                        WorkflowWebhookMgt.FindAndCancel(Rec.RecordId);
                     end;
                 }
                 group(Flow)
@@ -1728,7 +1722,7 @@ page 50099 "Sales Order LT"
                         begin
                             // Opens page 6400 where the user can use filtered templates to create new flows.
                             FlowTemplateSelector.SetSearchText(FlowServiceManagement.GetSalesTemplateFilter);
-                            FlowTemplateSelector.RUN;
+                            FlowTemplateSelector.Run;
                         end;
                     }
                     action(SeeFlows)
@@ -1738,18 +1732,18 @@ page 50099 "Sales Order LT"
                         Image = Flow;
                         Promoted = true;
                         PromotedCategory = Category9;
-                        RunObject = Page 6401;
+                        RunObject = Page "Flow Selector";
                         ToolTip = 'View and configure Flows that you created.';
                     }
                 }
             }
-            group(Warehouse_)
+            group(Action3)
             {
                 Caption = 'Warehouse';
                 Image = Warehouse;
                 action("Create Inventor&y Put-away/Pick")
                 {
-                    AccessByPermission = TableData 7342 = R;
+                    AccessByPermission = TableData "Posted Invt. Pick Header" = R;
                     ApplicationArea = Warehouse;
                     Caption = 'Create Inventor&y Put-away/Pick';
                     Ellipsis = true;
@@ -1762,13 +1756,13 @@ page 50099 "Sales Order LT"
                     begin
                         Rec.CreateInvtPutAwayPick;
 
-                        IF NOT Rec.FIND('=><') THEN
-                            Rec.INIT;
+                        if not Rec.Find('=><') then
+                            Rec.Init;
                     end;
                 }
                 action("Create &Warehouse Shipment")
                 {
-                    AccessByPermission = TableData 7320 = R;
+                    AccessByPermission = TableData "Warehouse Shipment Header" = R;
                     ApplicationArea = Warehouse;
                     Caption = 'Create &Warehouse Shipment';
                     Image = NewShipment;
@@ -1780,8 +1774,8 @@ page 50099 "Sales Order LT"
                     begin
                         GetSourceDocOutbound.CreateFromSalesOrder(Rec);
 
-                        IF NOT Rec.FIND('=><') THEN
-                            Rec.INIT;
+                        if not Rec.Find('=><') then
+                            Rec.Init;
                     end;
                 }
             }
@@ -1921,8 +1915,8 @@ page 50099 "Sales Order LT"
                         var
                             SalesPostYNPrepmt: Codeunit "Sales-Post Prepayment (Yes/No)";
                         begin
-                            IF ApprovalsMgmt.PrePostApprovalCheckSales(Rec) THEN
-                                SalesPostYNPrepmt.PostPrepmtInvoiceYN(Rec, FALSE);
+                            if ApprovalsMgmt.PrePostApprovalCheckSales(Rec) then
+                                SalesPostYNPrepmt.PostPrepmtInvoiceYN(Rec, false);
                         end;
                     }
                     action("Post and Print Prepmt. Invoic&e")
@@ -1937,8 +1931,8 @@ page 50099 "Sales Order LT"
                         var
                             SalesPostYNPrepmt: Codeunit "Sales-Post Prepayment (Yes/No)";
                         begin
-                            IF ApprovalsMgmt.PrePostApprovalCheckSales(Rec) THEN
-                                SalesPostYNPrepmt.PostPrepmtInvoiceYN(Rec, TRUE);
+                            if ApprovalsMgmt.PrePostApprovalCheckSales(Rec) then
+                                SalesPostYNPrepmt.PostPrepmtInvoiceYN(Rec, true);
                         end;
                     }
                     action(PreviewPrepmtInvoicePosting)
@@ -1965,8 +1959,8 @@ page 50099 "Sales Order LT"
                         var
                             SalesPostYNPrepmt: Codeunit "Sales-Post Prepayment (Yes/No)";
                         begin
-                            IF ApprovalsMgmt.PrePostApprovalCheckSales(Rec) THEN
-                                SalesPostYNPrepmt.PostPrepmtCrMemoYN(Rec, FALSE);
+                            if ApprovalsMgmt.PrePostApprovalCheckSales(Rec) then
+                                SalesPostYNPrepmt.PostPrepmtCrMemoYN(Rec, false);
                         end;
                     }
                     action("Post and Print Prepmt. Cr. Mem&o")
@@ -1981,8 +1975,8 @@ page 50099 "Sales Order LT"
                         var
                             SalesPostYNPrepmt: Codeunit "Sales-Post Prepayment (Yes/No)";
                         begin
-                            IF ApprovalsMgmt.PrePostApprovalCheckSales(Rec) THEN
-                                SalesPostYNPrepmt.PostPrepmtCrMemoYN(Rec, TRUE);
+                            if ApprovalsMgmt.PrePostApprovalCheckSales(Rec) then
+                                SalesPostYNPrepmt.PostPrepmtCrMemoYN(Rec, true);
                         end;
                     }
                     action(PreviewPrepmtCrMemoPosting)
@@ -2049,7 +2043,7 @@ page 50099 "Sales Order LT"
                         DocPrint.EmailSalesHeader(Rec);
                     end;
                 }
-                group(Group11)
+                group(Action96)
                 {
                     Visible = false;
                     action("Print Confirmation")
@@ -2079,21 +2073,21 @@ page 50099 "Sales Order LT"
         CRMCouplingManagement: Codeunit "CRM Coupling Management";
         CustCheckCrLimit: Codeunit "Cust-Check Cr. Limit";
     begin
-        DynamicEditable := CurrPage.EDITABLE;
+        DynamicEditable := CurrPage.Editable;
         CurrPage.IncomingDocAttachFactBox.PAGE.LoadDataFromRecord(Rec);
-        CurrPage.ApprovalFactBox.PAGE.UpdateApprovalEntriesFromSourceRecord(Rec.RECORDID);
+        CurrPage.ApprovalFactBox.PAGE.UpdateApprovalEntriesFromSourceRecord(Rec.RecordId);
         CRMIsCoupledToRecord := CRMIntegrationEnabled;
-        IF CRMIsCoupledToRecord THEN
-            CRMIsCoupledToRecord := CRMCouplingManagement.IsRecordCoupledToCRM(Rec.RECORDID);
-        ShowWorkflowStatus := CurrPage.WorkflowStatus.PAGE.SetFilterOnWorkflowRecord(Rec.RECORDID);
+        if CRMIsCoupledToRecord then
+            CRMIsCoupledToRecord := CRMCouplingManagement.IsRecordCoupledToCRM(Rec.RecordId);
+        ShowWorkflowStatus := CurrPage.WorkflowStatus.PAGE.SetFilterOnWorkflowRecord(Rec.RecordId);
         UpdatePaymentService;
-        IF CallNotificationCheck THEN BEGIN
+        if CallNotificationCheck then begin
             SalesHeader := Rec;
-            SalesHeader.CALCFIELDS("Amount Including VAT");
+            SalesHeader.CalcFields("Amount Including VAT");
             CustCheckCrLimit.SalesHeaderCheck(SalesHeader);
             Rec.CheckItemAvailabilityInLines;
-            CallNotificationCheck := FALSE;
-        END;
+            CallNotificationCheck := false;
+        end;
     end;
 
     trigger OnAfterGetRecord()
@@ -2107,8 +2101,8 @@ page 50099 "Sales Order LT"
 
     trigger OnDeleteRecord(): Boolean
     begin
-        CurrPage.SAVERECORD;
-        EXIT(Rec.ConfirmDeletion);
+        CurrPage.SaveRecord;
+        exit(Rec.ConfirmDeletion);
     end;
 
     trigger OnInit()
@@ -2121,18 +2115,18 @@ page 50099 "Sales Order LT"
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
-        IF DocNoVisible THEN
+        if DocNoVisible then
             Rec.CheckCreditMaxBeforeInsert;
 
-        IF (Rec."Sell-to Customer No." = '') AND (Rec.GETFILTER("Sell-to Customer No.") <> '') THEN
-            CurrPage.UPDATE(FALSE);
+        if (Rec."Sell-to Customer No." = '') and (Rec.GetFilter("Sell-to Customer No.") <> '') then
+            CurrPage.Update(false);
     end;
 
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
-        xRec.INIT;
+        xRec.Init;
         Rec."Responsibility Center" := UserMgt.GetSalesFilter;
-        IF (NOT DocNoVisible) AND (Rec."No." = '') THEN
+        if (not DocNoVisible) and (Rec."No." = '') then
             Rec.SetSellToCustomerFromFilter;
 
         Rec.SetDefaultPaymentServices;
@@ -2146,13 +2140,13 @@ page 50099 "Sales Order LT"
         OfficeMgt: Codeunit "Office Management";
         PermissionManager: Codeunit "Permission Manager";
     begin
-        IF UserMgt.GetSalesFilter <> '' THEN BEGIN
-            Rec.FILTERGROUP(2);
-            Rec.SETRANGE("Responsibility Center", UserMgt.GetSalesFilter);
-            Rec.FILTERGROUP(0);
-        END;
+        if UserMgt.GetSalesFilter <> '' then begin
+            Rec.FilterGroup(2);
+            Rec.SetRange("Responsibility Center", UserMgt.GetSalesFilter);
+            Rec.FilterGroup(0);
+        end;
 
-        Rec.SETRANGE("Date Filter", 0D, WORKDATE);
+        Rec.SetRange("Date Filter", 0D, WorkDate);
 
         ActivateFields;
 
@@ -2162,10 +2156,10 @@ page 50099 "Sales Order LT"
         IsOfficeHost := OfficeMgt.IsAvailable;
         //IsSaas := PermissionManager.SoftwareAsAService;
 
-        IF Rec."Quote No." <> '' THEN
-            ShowQuoteNo := TRUE;
-        IF (Rec."No." <> '') AND (Rec."Sell-to Customer No." = '') THEN
-            DocumentIsPosted := (NOT Rec.GET(Rec."Document Type", Rec."No."));
+        if Rec."Quote No." <> '' then
+            ShowQuoteNo := true;
+        if (Rec."No." <> '') and (Rec."Sell-to Customer No." = '') then
+            DocumentIsPosted := (not Rec.Get(Rec."Document Type", Rec."No."));
         PaymentServiceVisible := PaymentServiceSetup.IsPaymentServiceVisible;
     end;
 
@@ -2173,11 +2167,11 @@ page 50099 "Sales Order LT"
     var
         InstructionMgt: Codeunit "Instruction Mgt.";
     begin
-        IF ShowReleaseNotification THEN
-            IF NOT InstructionMgt.ShowConfirmUnreleased THEN
-                EXIT(FALSE);
-        IF NOT DocumentIsPosted THEN
-            EXIT(Rec.ConfirmCloseUnposted);
+        if ShowReleaseNotification then
+            if not InstructionMgt.ShowConfirmUnreleased then
+                exit(false);
+        if not DocumentIsPosted then
+            exit(Rec.ConfirmCloseUnposted);
     end;
 
     var
@@ -2196,8 +2190,6 @@ page 50099 "Sales Order LT"
         Usage: Option "Order Confirmation","Work Order","Pick Instruction";
         NavigateAfterPost: Option "Posted Document","New Document",Nowhere;
         [InDataSet]
-
-
         JobQueueVisible: Boolean;
         Text001: Label 'Do you want to change %1 in all related records in the warehouse?';
         Text002: Label 'The update has been interrupted to respect the warning.';
@@ -2245,40 +2237,40 @@ page 50099 "Sales Order LT"
         InstructionMgt: Codeunit "Instruction Mgt.";
         IsScheduledPosting: Boolean;
     begin
-        IF ApplicationAreaMgmtFacade.IsFoundationEnabled THEN
+        if ApplicationAreaMgmtFacade.IsFoundationEnabled then
             LinesInstructionMgt.SalesCheckAllLinesHaveQuantityAssigned(Rec);
 
         Rec.SendToPosting(PostingCodeunitID);
 
         IsScheduledPosting := Rec."Job Queue Status" = Rec."Job Queue Status"::"Scheduled for Posting";
-        DocumentIsPosted := (NOT SalesHeader.GET(Rec."Document Type", Rec."No.")) OR IsScheduledPosting;
+        DocumentIsPosted := (not SalesHeader.Get(Rec."Document Type", Rec."No.")) or IsScheduledPosting;
         OnPostOnAfterSetDocumentIsPosted(SalesHeader, IsScheduledPosting, DocumentIsPosted);
 
-        IF IsScheduledPosting THEN
-            CurrPage.CLOSE;
-        CurrPage.UPDATE(FALSE);
+        if IsScheduledPosting then
+            CurrPage.Close;
+        CurrPage.Update(false);
 
-        IF PostingCodeunitID <> CODEUNIT::"Sales-Post (Yes/No)" THEN
-            EXIT;
+        if PostingCodeunitID <> CODEUNIT::"Sales-Post (Yes/No)" then
+            exit;
 
-        CASE Navigate OF
+        case Navigate of
             NavigateAfterPost::"Posted Document":
-                BEGIN
-                    IF InstructionMgt.IsEnabled(InstructionMgt.ShowPostedConfirmationMessageCode) THEN
+                begin
+                    if InstructionMgt.IsEnabled(InstructionMgt.ShowPostedConfirmationMessageCode) then
                         ShowPostedConfirmationMessage;
 
-                    IF DocumentIsPosted THEN
-                        CurrPage.CLOSE;
-                END;
+                    if DocumentIsPosted then
+                        CurrPage.Close;
+                end;
             NavigateAfterPost::"New Document":
-                IF DocumentIsPosted THEN BEGIN
-                    SalesHeader.INIT;
-                    SalesHeader.VALIDATE("Document Type", SalesHeader."Document Type"::Order);
+                if DocumentIsPosted then begin
+                    SalesHeader.Init;
+                    SalesHeader.Validate("Document Type", SalesHeader."Document Type"::Order);
                     OnPostOnBeforeSalesHeaderInsert(SalesHeader);
-                    SalesHeader.INSERT(TRUE);
-                    PAGE.RUN(PAGE::"Sales Order", SalesHeader);
-                END;
-        END;
+                    SalesHeader.Insert(true);
+                    PAGE.Run(PAGE::"Sales Order", SalesHeader);
+                end;
+        end;
     end;
 
     local procedure ApproveCalcInvDisc()
@@ -2290,34 +2282,34 @@ page 50099 "Sales Order LT"
     var
         DocumentTotals: Codeunit "Document Totals";
     begin
-        CurrPage.SAVERECORD;
+        CurrPage.SaveRecord;
         DocumentTotals.SalesRedistributeInvoiceDiscountAmountsOnDocument(Rec);
-        CurrPage.UPDATE(FALSE);
+        CurrPage.Update(false);
     end;
 
     local procedure SalespersonCodeOnAfterValidate()
     begin
-        CurrPage.SalesLines.PAGE.UpdateForm(TRUE);
+        CurrPage.SalesLines.PAGE.UpdateForm(true);
     end;
 
     local procedure ShortcutDimension1CodeOnAfterV()
     begin
-        CurrPage.UPDATE;
+        CurrPage.Update;
     end;
 
     local procedure ShortcutDimension2CodeOnAfterV()
     begin
-        CurrPage.UPDATE;
+        CurrPage.Update;
     end;
 
     local procedure PricesIncludingVATOnAfterValid()
     begin
-        CurrPage.UPDATE;
+        CurrPage.Update;
     end;
 
     local procedure Prepayment37OnAfterValidate()
     begin
-        CurrPage.UPDATE;
+        CurrPage.Update;
     end;
 
     local procedure SetDocNoVisible()
@@ -2332,7 +2324,7 @@ page 50099 "Sales Order LT"
     var
         SalesReceivablesSetup: Record "Sales & Receivables Setup";
     begin
-        SalesReceivablesSetup.GET;
+        SalesReceivablesSetup.Get;
         ExternalDocNoMandatory := SalesReceivablesSetup."Ext. Doc. No. Mandatory"
     end;
 
@@ -2366,12 +2358,12 @@ page 50099 "Sales Order LT"
         HasIncomingDocument := Rec."Incoming Document Entry No." <> 0;
         SetExtDocNoMandatoryCondition;
 
-        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RECORDID);
-        OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RECORDID);
-        CanCancelApprovalForRecord := ApprovalsMgmt.CanCancelApprovalForRecord(Rec.RECORDID);
+        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(Rec.RecordId);
+        OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(Rec.RecordId);
+        CanCancelApprovalForRecord := ApprovalsMgmt.CanCancelApprovalForRecord(Rec.RecordId);
 
-        WorkflowWebhookMgt.GetCanRequestAndCanCancel(Rec.RECORDID, CanRequestApprovalForFlow, CanCancelApprovalForFlow);
-        IsCustomerOrContactNotEmpty := (Rec."Sell-to Customer No." <> '') OR (Rec."Sell-to Contact No." <> '');
+        WorkflowWebhookMgt.GetCanRequestAndCanCancel(Rec.RecordId, CanRequestApprovalForFlow, CanCancelApprovalForFlow);
+        IsCustomerOrContactNotEmpty := (Rec."Sell-to Customer No." <> '') or (Rec."Sell-to Contact No." <> '');
     end;
 
     local procedure ShowPostedConfirmationMessage()
@@ -2380,14 +2372,14 @@ page 50099 "Sales Order LT"
         SalesInvoiceHeader: Record "Sales Invoice Header";
         InstructionMgt: Codeunit "Instruction Mgt.";
     begin
-        IF NOT OrderSalesHeader.GET(Rec."Document Type", Rec."No.") THEN BEGIN
-            SalesInvoiceHeader.SETRANGE("No.", Rec."Last Posting No.");
-            IF SalesInvoiceHeader.FINDFIRST THEN
-                IF InstructionMgt.ShowConfirm(STRSUBSTNO(OpenPostedSalesOrderQst, SalesInvoiceHeader."No."),
+        if not OrderSalesHeader.Get(Rec."Document Type", Rec."No.") then begin
+            SalesInvoiceHeader.SetRange("No.", Rec."Last Posting No.");
+            if SalesInvoiceHeader.FindFirst then
+                if InstructionMgt.ShowConfirm(StrSubstNo(OpenPostedSalesOrderQst, SalesInvoiceHeader."No."),
                      InstructionMgt.ShowPostedConfirmationMessageCode)
-                THEN
-                    PAGE.RUN(PAGE::"Posted Sales Invoice", SalesInvoiceHeader);
-        END;
+                then
+                    PAGE.Run(PAGE::"Posted Sales Invoice", SalesInvoiceHeader);
+        end;
     end;
 
     local procedure UpdatePaymentService()
@@ -2410,25 +2402,25 @@ page 50099 "Sales Order LT"
 
     procedure CheckNotificationsOnce()
     begin
-        CallNotificationCheck := TRUE;
+        CallNotificationCheck := true;
     end;
 
     local procedure ShowReleaseNotification(): Boolean
     var
         LocationsQuery: Query "Locations from items Sales";
     begin
-        IF Rec.Status <> Rec.Status::Released THEN BEGIN
-            LocationsQuery.SETRANGE(Document_No, Rec."No.");
-            LocationsQuery.SETRANGE(Require_Pick, TRUE);
-            LocationsQuery.OPEN;
-            IF LocationsQuery.READ THEN
-                EXIT(TRUE);
-            LocationsQuery.SETRANGE(Require_Pick);
-            LocationsQuery.SETRANGE(Require_Shipment, TRUE);
-            LocationsQuery.OPEN;
-            EXIT(LocationsQuery.READ);
-        END;
-        EXIT(FALSE);
+        if Rec.Status <> Rec.Status::Released then begin
+            LocationsQuery.SetRange(Document_No, Rec."No.");
+            LocationsQuery.SetRange(Require_Pick, true);
+            LocationsQuery.Open;
+            if LocationsQuery.Read then
+                exit(true);
+            LocationsQuery.SetRange(Require_Pick);
+            LocationsQuery.SetRange(Require_Shipment, true);
+            LocationsQuery.Open;
+            exit(LocationsQuery.Read);
+        end;
+        exit(false);
     end;
 
     [IntegrationEvent(false, false)]

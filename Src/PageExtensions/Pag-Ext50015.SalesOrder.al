@@ -4,7 +4,7 @@ pageextension 50015 SalesOrder extends "Sales Order"
     {
         addlast(General)
         {
-            
+
             field(ExternalID; Rec.ExternalID)
             {
                 ApplicationArea = All;
@@ -30,41 +30,41 @@ pageextension 50015 SalesOrder extends "Sales Order"
                 ApplicationArea = All;
                 ToolTip = 'Specifies the value of the Sell-to Customer Name 3 field.';
             }
-            field("Currency Code IT"; Rec."Currency Code IT")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Currency Code IT field.';
-            }
-            field("Payment Method Code IT"; Rec."Payment Method Code IT")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Payment Method Code IT field.';
-            }
-            field("Payment Terms Code IT"; Rec."Payment Terms Code IT")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Payment Terms Code IT field.';
-            }
-            field("Salesperson Code IT"; Rec."Salesperson Code IT")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Salesperson Code IT field.';
-            }
-            field("Shipment Date IT"; Rec."Shipment Date IT")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Shipment Date IT field.';
-            }
-            field("Rapidi Fields Updated"; Rec."Rapidi Fields Updated")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Rapidi Fields Updated field.';
-            }
-            field("Created By Rapidi"; Rec."Created By Rapidi")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the Created By Rapidi field.';
-            }
+            // field("Currency Code IT"; Rec."Currency Code IT")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Currency Code IT field.';
+            // }
+            // field("Payment Method Code IT"; Rec."Payment Method Code IT")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Payment Method Code IT field.';
+            // }
+            // field("Payment Terms Code IT"; Rec."Payment Terms Code IT")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Payment Terms Code IT field.';
+            // }
+            // field("Salesperson Code IT"; Rec."Salesperson Code IT")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Salesperson Code IT field.';
+            // }
+            // field("Shipment Date IT"; Rec."Shipment Date IT")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Shipment Date IT field.';
+            // }
+            // field("Rapidi Fields Updated"; Rec."Rapidi Fields Updated")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Rapidi Fields Updated field.';
+            // }
+            // field("Created By Rapidi"; Rec."Created By Rapidi")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the Created By Rapidi field.';
+            // }
             field("VAT Country/Region Code"; Rec."VAT Country/Region Code")
             {
                 ApplicationArea = All;
@@ -137,4 +137,13 @@ pageextension 50015 SalesOrder extends "Sales Order"
             }
         }
     }
+    trigger OnOpenPage()
+    begin
+        if (Rec."Created By Rapidi") AND (Rec."Rapidi Fields Updated" = false) then begin
+            Rec.PopulateCustomFields();
+            Rec."Rapidi Fields Updated" := true;
+            Rec.Modify();
+            Commit();// used commit as it was throwing error while opening other Runmodal pages on SO card like Dimensions
+        end;
+    end;
 }
