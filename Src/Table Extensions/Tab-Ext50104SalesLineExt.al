@@ -30,6 +30,13 @@ tableextension 50104 SalesLineExt extends "Sales Line"
         {
             DataClassification = ToBeClassified;
         }
+        field(50452; "Order Date_Intwo"; Date)
+        {
+            Caption = 'Order Date';
+            FieldClass = FlowField;
+            CalcFormula = lookup("Sales Header"."Order Date" where("No." = field("Document No.")));
+            ObsoleteState = Removed;
+        }
     }
 
     var
