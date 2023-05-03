@@ -287,9 +287,9 @@ query 50001 SalesOrder
             column(Send_IC_Document; "Send IC Document")
             {
             }
-            column(Sent_as_Email; "Sent as Email")
-            {
-            }
+            // column(Sent_as_Email; "Sent as Email")
+            // {
+            // }
             column(Shipment_Date; "Shipment Date")
             {
             }
@@ -795,18 +795,18 @@ query 50001 SalesOrder
                 column(Originally_Ordered_Var_Code; "Originally Ordered Var. Code")
                 {
                 }
-                column(Cross_Reference_No; "Cross-Reference No.")
-                {
-                }
-                column(Unit_of_Measure_Cross_Ref; "Unit of Measure (Cross Ref.)")
-                {
-                }
-                column(Cross_Reference_Type; "Cross-Reference Type")
-                {
-                }
-                column(Cross_Reference_Type_No; "Cross-Reference Type No.")
-                {
-                }
+                // column(Cross_Reference_No; "Cross-Reference No.")
+                // {
+                // }
+                // column(Unit_of_Measure_Cross_Ref; "Unit of Measure (Cross Ref.)")
+                // {
+                // }
+                // column(Cross_Reference_Type; "Cross-Reference Type")
+                // {
+                // }
+                // column(Cross_Reference_Type_No; "Cross-Reference Type No.")
+                // {
+                // }
                 column(Item_Category_Code; "Item Category Code")
                 {
                 }
