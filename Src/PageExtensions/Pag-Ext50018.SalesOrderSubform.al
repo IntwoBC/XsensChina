@@ -13,7 +13,7 @@ pageextension 50018 SalesOrderSubform extends "Sales Order Subform"
                 ApplicationArea = All;
             }
         }
-        addafter("Total VAT Amount")
+        addlast(Control1)
         {
             field("VAT %"; Rec."VAT %")
             {
