@@ -59,10 +59,10 @@ page 50097 "Posted Sales Invoice Lines_LT"
                     ToolTip = 'Specifies the code for Shortcut Dimension 2, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
                     Visible = false;
                 }
-                field("ShortcutDimCode[6]"; ShortcutDimCodeL[6])
+                field("Shortcut Dimension 6 Code"; ShortcutDimCodeL[6])
                 {
                     ApplicationArea = Dimensions;
-                    CaptionClass = '1,2,6';
+                    //CaptionClass = '1,2,6';
                     TableRelation = "Dimension Value".Code WHERE("Global Dimension No." = CONST(6),
                                                                   "Dimension Value Type" = CONST(Standard),
                                                                   Blocked = CONST(false));

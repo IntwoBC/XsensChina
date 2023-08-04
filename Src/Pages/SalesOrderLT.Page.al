@@ -486,6 +486,20 @@ page 50099 "Sales Order LT"
                         ShortcutDimension1CodeOnAfterV;
                     end;
                 }
+                 field("Shortcut Dimension 6 Code"; ShortcutDimCodeL[6])
+                {
+                    ApplicationArea = Dimensions;
+                    //CaptionClass = '1,2,6';
+                    TableRelation = "Dimension Value".Code WHERE("Global Dimension No." = CONST(6),
+                                                                  "Dimension Value Type" = CONST(Standard),
+                                                                  Blocked = CONST(false));
+                    Visible = true;
+                    trigger OnValidate()
+                    begin
+                        Rec.ValidateShortcutDimCode(6, ShortcutDimCodeL[6]);
+                        ShortcutDimension1CodeOnAfterV;
+                    end;
+                }
                 field("Payment Discount %"; Rec."Payment Discount %")
                 {
                     ApplicationArea = Basic, Suite;
@@ -2097,6 +2111,7 @@ page 50099 "Sales Order LT"
         SetControlVisibility;
         UpdateShipToBillToGroupVisibility;
         WorkDescription := Rec.GetWorkDescription;
+        ShowShortcutDimCode(ShortcutDimCodeL);
     end;
 
     trigger OnDeleteRecord(): Boolean
@@ -2222,6 +2237,15 @@ page 50099 "Sales Order LT"
         IsBillToCountyVisible: Boolean;
         IsSellToCountyVisible: Boolean;
         IsShipToCountyVisible: Boolean;
+        ShortcutDimCodeL: array[8] of Code[20];
+
+
+    procedure ShowShortcutDimCode(var ShortcutDimCode: array[8] of Code[20])
+    var
+        DimMgt: Codeunit DimensionManagement;
+    begin
+        DimMgt.GetShortcutDimensions(Rec."Dimension Set ID", ShortcutDimCode);
+    end;
 
     local procedure ActivateFields()
     begin

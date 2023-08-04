@@ -445,6 +445,15 @@ page 50098 "Posted Sales Invoice_LT"
                     ApplicationArea = Dimensions;
                     ToolTip = 'Specifies the value of the Shortcut Dimension 2 Code field.';
                 }
+                 field("Shortcut Dimension 6 Code"; ShortcutDimCodeL[6])
+                {
+                    ApplicationArea = Dimensions;
+                    //CaptionClass = '1,2,6';
+                    TableRelation = "Dimension Value".Code WHERE("Global Dimension No." = CONST(6),
+                                                                  "Dimension Value Type" = CONST(Standard),
+                                                                  Blocked = CONST(false));
+                    Visible = true;
+                }
                 field("Payment Discount %"; Rec."Payment Discount %")
                 {
                     ApplicationArea = Basic, Suite;
@@ -1185,6 +1194,7 @@ page 50098 "Posted Sales Invoice_LT"
     trigger OnAfterGetRecord()
     begin
         DocExchStatusStyle := Rec.GetDocExchStatusStyle;
+        ShowShortcutDimCode(ShortcutDimCodeL);
     end;
 
     trigger OnInit()
@@ -1225,6 +1235,15 @@ page 50098 "Posted Sales Invoice_LT"
         IsBillToCountyVisible: Boolean;
         IsSellToCountyVisible: Boolean;
         IsShipToCountyVisible: Boolean;
+         ShortcutDimCodeL: array[8] of Code[20];
+
+
+    procedure ShowShortcutDimCode(var ShortcutDimCode: array[8] of Code[20])
+    var
+        DimMgt: Codeunit DimensionManagement;
+    begin
+        DimMgt.GetShortcutDimensions(Rec."Dimension Set ID", ShortcutDimCode);
+    end;
 
     local procedure ActivateFields()
     begin
