@@ -286,6 +286,15 @@ page 50096 "Posted Sales Credit Memo_LT"
                     Editable = false;
                     ToolTip = 'Specifies the code for Shortcut Dimension 2, which is one of two global dimension codes that you set up in the General Ledger Setup window.';
                 }
+                field("Shortcut Dimension 6 Code"; ShortcutDimCodeL[6])
+                {
+                    ApplicationArea = Dimensions;
+                    //CaptionClass = '1,2,6';
+                    TableRelation = "Dimension Value".Code WHERE("Global Dimension No." = CONST(6),
+                                                                  "Dimension Value Type" = CONST(Standard),
+                                                                  Blocked = CONST(false));
+                    Visible = true;
+                }
                 field("Location Code"; Rec."Location Code")
                 {
                     ApplicationArea = Location;
@@ -817,6 +826,7 @@ page 50096 "Posted Sales Credit Memo_LT"
     begin
         DocExchStatusStyle := Rec.GetDocExchStatusStyle;
         SalesCorrectiveCrMemoExists := CancelledDocument.FindSalesCorrectiveCrMemo(Rec."No.");
+        ShowShortcutDimCode(ShortcutDimCodeL);
     end;
 
     trigger OnOpenPage()
@@ -844,6 +854,15 @@ page 50096 "Posted Sales Credit Memo_LT"
         IsBillToCountyVisible: Boolean;
         IsSellToCountyVisible: Boolean;
         IsShipToCountyVisible: Boolean;
+        ShortcutDimCodeL: array[8] of Code[20];
+
+
+    procedure ShowShortcutDimCode(var ShortcutDimCode: array[8] of Code[20])
+    var
+        DimMgt: Codeunit DimensionManagement;
+    begin
+        DimMgt.GetShortcutDimensions(Rec."Dimension Set ID", ShortcutDimCode);
+    end;
 
     local procedure ActivateFields()
     begin
