@@ -48,10 +48,10 @@ xmlport 50000 "IC Outbox Imp/Exp_Intwo"
                 fieldattribute(DocDate; ICOutboxTrans."Document Date")
                 {
                 }
-                fieldattribute(ICPartnerAccNo; ICOutboxTrans."IC Partner G/L Acc. No.")
+                fieldattribute(ICPartnerAccNo; ICOutboxTrans."IC Account No.")
                 {
                 }
-                fieldattribute(SourceLineNo; ICOutboxTrans."IC Partner G/L Acc. No.")
+                fieldattribute(SourceLineNo; ICOutboxTrans."IC Account No.")
                 {
                 }
                 textelement(ICOutBoxJnlLines)
@@ -707,7 +707,7 @@ xmlport 50000 "IC Outbox Imp/Exp_Intwo"
     end;
 
     var
-        CompanyInfo: Record "Company Information";
+        CompanyInfo: Record "IC Setup";
         ToICPartnerCode2: Code[20];
 
     procedure SetICOutboxTrans(var NewICOutboxTrans: Record "IC Outbox Transaction")

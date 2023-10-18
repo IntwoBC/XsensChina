@@ -1732,11 +1732,11 @@ page 50099 "Sales Order LT"
                         trigger OnAction()
                         var
                             FlowServiceManagement: Codeunit "Flow Service Management";
-                            FlowTemplateSelector: Page "Flow Template Selector";
+                            //FlowTemplateSelector: Page "Flow Template Selector";
                         begin
                             // Opens page 6400 where the user can use filtered templates to create new flows.
-                            FlowTemplateSelector.SetSearchText(FlowServiceManagement.GetSalesTemplateFilter);
-                            FlowTemplateSelector.Run;
+                            // FlowTemplateSelector.SetSearchText(FlowServiceManagement.GetSalesTemplateFilter);
+                            // FlowTemplateSelector.Run;
                         end;
                     }
                     action(SeeFlows)
@@ -1746,7 +1746,7 @@ page 50099 "Sales Order LT"
                         Image = Flow;
                         Promoted = true;
                         PromotedCategory = Category9;
-                        RunObject = Page "Flow Selector";
+                        //RunObject = Page "Flow Selector";
                         ToolTip = 'View and configure Flows that you created.';
                     }
                 }

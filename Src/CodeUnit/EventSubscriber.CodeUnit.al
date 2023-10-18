@@ -24,16 +24,17 @@ codeunit 50000 "Event Subscriber"
 
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"IC Inbox Import", 'OnBeforeImportInboxTransaction', '', false, false)]
-    local procedure OnBeforeImportInboxTransaction(CompanyInfo: Record "Company Information"; var IStream: InStream; var TempICOutboxTransaction: Record "IC Outbox Transaction"; var TempICOutboxJnlLine: Record "IC Outbox Jnl. Line"; var TempICInboxOutboxJnlLineDim: Record "IC Inbox/Outbox Jnl. Line Dim."; var TempICOutboxSalesHeader: Record "IC Outbox Sales Header"; var TempICOutboxSalesLine: Record "IC Outbox Sales Line"; var TempICOutboxPurchaseHeader: Record "IC Outbox Purchase Header"; var TempICOutboxPurchaseLine: Record "IC Outbox Purchase Line"; var TempICDocDim: Record "IC Document Dimension"; var FromICPartnerCode: Code[20]; var IsHandled: Boolean);
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"IC Inbox Import", 'OnBeforeImportInboxTransactionProcedure', '', false, false)]
+    local procedure OnBeforeImportInboxTransaction(var IStream: InStream; var TempICOutboxTransaction: Record "IC Outbox Transaction"; var TempICOutboxJnlLine: Record "IC Outbox Jnl. Line"; var TempICInboxOutboxJnlLineDim: Record "IC Inbox/Outbox Jnl. Line Dim."; var TempICOutboxSalesHeader: Record "IC Outbox Sales Header"; var TempICOutboxSalesLine: Record "IC Outbox Sales Line"; var TempICOutboxPurchaseHeader: Record "IC Outbox Purchase Header"; var TempICOutboxPurchaseLine: Record "IC Outbox Purchase Line"; var TempICDocDim: Record "IC Document Dimension"; var FromICPartnerCode: Code[20]; var IsHandled: Boolean);
     var
         ICPartner: Record "IC Partner";
         ICOutboxImpExpXML: XMLport "IC Outbox Imp/Exp_Intwo";
         IFile: File;
         ToICPartnerCode: Code[20];
         WrongCompanyErr: Label 'The selected xml file contains data sent to %1 %2. Current company''s %3 is %4.', Comment = 'The selected xml file contains data sent to IC Partner 001. Current company''s IC Partner Code is 002.';
+        CompanyInfo: Record "IC Setup";
     begin
-
+        CompanyInfo.Get();
         ICOutboxImpExpXML.SetSource(IStream);
         ICOutboxImpExpXML.Import;
 
