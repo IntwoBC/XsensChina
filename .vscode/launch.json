@@ -10,7 +10,7 @@
             "type": "al",
             "tenant": "d1409b55-fd58-4730-9c0b-8d96619cefa7",
             "environmentType": "Sandbox",
-            "environmentName": "APAC-TEST",
+            "environmentName": "APACDebug",
             "startupObjectId": 22,
             "startupObjectType": "Page",
             "breakOnError": "All",
