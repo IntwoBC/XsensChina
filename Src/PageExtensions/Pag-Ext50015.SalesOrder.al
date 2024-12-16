@@ -65,11 +65,11 @@ pageextension 50015 SalesOrder extends "Sales Order"
             //     ApplicationArea = All;
             //     ToolTip = 'Specifies the value of the Created By Rapidi field.';
             // }
-            field("VAT Country/Region Code"; Rec."VAT Country/Region Code")
-            {
-                ApplicationArea = All;
-                ToolTip = 'Specifies the value of the VAT Country/Region Code field.';
-            }
+            // field("VAT Country/Region Code"; Rec."VAT Country/Region Code")
+            // {
+            //     ApplicationArea = All;
+            //     ToolTip = 'Specifies the value of the VAT Country/Region Code field.';
+            // }
             field("Sell-to Contact E-mail"; Rec."Sell-to Contact E-mail")
             {
                 ApplicationArea = All;
